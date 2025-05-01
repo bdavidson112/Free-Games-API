@@ -3,113 +3,51 @@ import { useParams } from 'react-router'; // Import useParams to get the ID from
 import { fetchData } from '../App'; // Import fetchData from App.js
 
 function Game() {
-  const { id } = useParams(); // Get the game ID from the URL
-  const [game, setGame] = useState(null); // State to store game details
+  const { id } = useParams(); // Get the movie ID from the URL
+  const [movie, setMovie] = useState(null); // State to store movie details
   const [loading, setLoading] = useState(true); // State to track loading
 
   useEffect(() => {
-    const fetchGameDetails = async () => {
+    const fetchMovieDetails = async () => {
       try {
-        const data = await fetchData(`giveaway?id=${id}`); // Fetch giveaway details via the proxy
+        const data = await fetchData(`i=${id}`); // Fetch movie details by IMDb ID
         if (data) {
-          setGame(data);
+          setMovie(data);
         } else {
-          console.error('No data received for the game');
+          console.error('No data received for the movie');
         }
       } catch (error) {
-        console.error('Error fetching game details:', error);
+        console.error('Error fetching movie details:', error);
       } finally {
         setLoading(false); // Ensure loading is set to false after the fetch
       }
     };
 
-    fetchGameDetails();
+    fetchMovieDetails();
   }, [id]);
 
   if (loading) {
-    // Skeleton loading state
-    return (
-      <div
-        style={{
-          padding: '20px',
-          maxWidth: '800px',
-          margin: '0 auto',
-          textAlign: 'center',
-          height: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          boxSizing: 'border-box',
-        }}
-      >
-        <div style={{ width: '60%', height: '40px', backgroundColor: '#ccc', marginBottom: '20px', borderRadius: '5px' }}></div>
-        <div style={{ width: '40%', height: '20px', backgroundColor: '#ddd', marginBottom: '20px', borderRadius: '5px' }}></div>
-        <div style={{ width: '100%', maxWidth: '400px', height: '200px', backgroundColor: '#eee', marginBottom: '20px', borderRadius: '8px' }}></div>
-        <div style={{ width: '80%', height: '20px', backgroundColor: '#ddd', marginBottom: '10px', borderRadius: '5px' }}></div>
-        <div style={{ width: '80%', height: '20px', backgroundColor: '#ddd', marginBottom: '10px', borderRadius: '5px' }}></div>
-        <div style={{ width: '50%', height: '20px', backgroundColor: '#ccc', marginBottom: '20px', borderRadius: '5px' }}></div>
-      </div>
-    );
+    return <div>Loading...</div>;
   }
 
-  if (!game) {
-    return <div>Error: Game details could not be loaded.</div>;
+  if (!movie) {
+    return <div>Error: Movie details could not be loaded.</div>;
   }
 
   return (
-    <div
-      style={{
-        padding: '20px',
-        maxWidth: '800px',
-        margin: '0 auto',
-        textAlign: 'center',
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        boxSizing: 'border-box',
-      }}
-    >
-      {/* Title */}
-      <h1>{game.title}</h1>
-
-      {/* Worth */}
-      <h3>Worth: {game.worth}</h3>
-
-      {/* Thumbnail */}
+    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
+      <h1>{movie.Title}</h1>
+      <h3>Year: {movie.Year}</h3>
       <img
-        src={game.thumbnail}
-        alt={game.title}
+        src={movie.Poster}
+        alt={movie.Title}
         style={{ width: '100%', maxWidth: '400px', borderRadius: '8px', margin: '20px 0' }}
       />
-
-      {/* Description */}
-      <p style={{ fontSize: '16px', lineHeight: '1.5', margin: '20px 0' }}>{game.description}</p>
-
-      {/* Instructions */}
-      <p style={{ fontSize: '16px', lineHeight: '1.5', margin: '20px 0' }}>
-        <strong>Instructions:</strong> {game.instructions}
-      </p>
-
-      {/* Platforms */}
-      <h3>Platforms: {game.platforms}</h3>
-
-      {/* Status */}
-      <h3>Status: {game.status}</h3>
-
-      {/* GamerPower URL */}
-      <h5>
-        <a
-          href={game.gamerpower_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: '#007BFF', textDecoration: 'none' }}
-        >
-          View on GamerPower
-        </a>
-      </h5>
+      <p>{movie.Plot}</p>
+      <h4>Director: {movie.Director}</h4>
+      <h4>Actors: {movie.Actors}</h4>
+      <h4>Genre: {movie.Genre}</h4>
+      <h4>IMDB Rating: {movie.imdbRating}</h4>
     </div>
   );
 }

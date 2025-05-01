@@ -30,11 +30,9 @@ function Home() {
     >
       {/* Page Title */}
       <h1 style={{ fontSize: '3rem', marginBottom: '10px', textAlign: 'center' }}>
-        Welcome to Free Games API
+        Welcome to Batman Movies API
       </h1>
-      <p style={{ fontSize: '1.2rem', marginBottom: '20px', textAlign: 'center' }}>
-        Discover the best free games available online!
-      </p>
+      
 
       {/* Slogan */}
       <h3 style={{ fontSize: '1.5rem', marginBottom: '30px', textAlign: 'center' }}>

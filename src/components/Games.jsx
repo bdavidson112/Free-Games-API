@@ -1,25 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router'; // Import useNavigate
 import { fetchData } from '../App'; // Import fetchData from App.js
+import { useNavigate } from 'react-router'; // Import useNavigate for navigation
 
 function Games() {
-
-  const [games, setGames] = useState([]); // State to store all games
+  const [movies, setMovies] = useState([]); // State to store movies
   const [searchQuery, setSearchQuery] = useState(''); // State for search input
-  const [filteredGames, setFilteredGames] = useState([]); // State for filtered games
+  const [filteredMovies, setFilteredMovies] = useState([]); // State for filtered movies
   const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
-    const fetchGames = async () => {
-      const data = await fetchData('giveaways'); // Fetch all giveaways via the proxy
-      if (data) {
-        setGames(data);
-        setFilteredGames(data);
-        
+    const fetchMovies = async () => {
+      const data = await fetchData('s=batman'); // Example query to search for "batman"
+      if (data && data.Search) {
+        setMovies(data.Search);
+        setFilteredMovies(data.Search);
       }
     };
 
-    fetchGames();
+    fetchMovies();
   }, []);
 
   const handleInputChange = (e) => {
@@ -28,28 +26,27 @@ function Games() {
   };
 
   const handleButtonClick = () => {
-    // Filter games based on the search query
-    const filtered = games.filter((game) =>
-      game.title.toLowerCase().includes(searchQuery)
+    // Filter movies based on the search query
+    const filtered = movies.filter((movie) =>
+      movie.Title.toLowerCase().includes(searchQuery)
     );
-    setFilteredGames(filtered);
-    console.log('Filtered games:', filtered);
+    setFilteredMovies(filtered);
   };
 
   const handleCardClick = (id) => {
-    // Navigate to the individual game page
+    // Navigate to the individual movie page
     navigate(`/game/${id}`);
   };
 
   return (
     <div style={{ padding: '20px' }}>
-      <h1 style={{ textAlign: 'center' }}>Games</h1>
+      <h1 style={{ textAlign: 'center' }}>Movies</h1>
 
       {/* Input and Search Bar */}
       <div style={{ margin: '20px 0', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <input
           type="text"
-          placeholder="Search for a game..."
+          placeholder="Search for a movie..."
           value={searchQuery}
           onChange={handleInputChange}
           style={{ padding: '10px', fontSize: '16px', width: '300px', marginRight: '10px' }}
@@ -69,13 +66,13 @@ function Games() {
         </button>
       </div>
 
-      {/* Games Grid */}
+      {/* Movies Grid */}
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '20px' }}>
-        {filteredGames && filteredGames.length > 0 ? (
-          filteredGames.map((game) => (
+        {filteredMovies && filteredMovies.length > 0 ? (
+          filteredMovies.map((movie) => (
             <div
-              key={game.id}
-              onClick={() => handleCardClick(game.id)} // Add onClick handler
+              key={movie.imdbID}
+              onClick={() => handleCardClick(movie.imdbID)} // Add onClick handler
               style={{
                 border: '1px solid #ccc',
                 borderRadius: '8px',
@@ -87,16 +84,16 @@ function Games() {
               }}
             >
               <img
-                src={game.thumbnail}
-                alt={game.title}
-                style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '4px' }}
+                src={movie.Poster}
+                alt={movie.Title}
+                style={{ width: '100%', height: '300px', objectFit: 'cover', borderRadius: '4px' }}
               />
-              <h3 style={{ fontSize: '18px', margin: '10px 0' }}>{game.title}</h3>
-              <p style={{ fontSize: '16px', color: '#555' }}>Worth: {game.worth}</p>
+              <h3 style={{ fontSize: '18px', margin: '10px 0' }}>{movie.Title}</h3>
+              <p style={{ fontSize: '16px', color: '#555' }}>Year: {movie.Year}</p>
             </div>
           ))
         ) : (
-          <p style={{ textAlign: 'center', fontSize: '18px', color: '#555' }}>No games found.</p>
+          <p style={{ textAlign: 'center', fontSize: '18px', color: '#555' }}>No movies found.</p>
         )}
       </div>
     </div>

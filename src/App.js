@@ -11,9 +11,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router'; // Update
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
-export async function fetchData(endpoint) {
+export async function fetchData(query) {
   try {
-    const response = await axios.get(`${process.env.REACT_APP_API_URL}/${endpoint}`);
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}${query}`);
     console.log(response.data);
     return response.data;
   } catch (error) {
