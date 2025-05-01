@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router'; // Import useParams to get the ID from the URL
+import { fetchData } from '../App'; // Import fetchData from App.js
 
 function Game() {
   const { id } = useParams(); // Get the game ID from the URL
@@ -9,13 +10,16 @@ function Game() {
   useEffect(() => {
     const fetchGameDetails = async () => {
       try {
-        const response = await fetch(`https://cors-anywhere.herokuapp.com/https://www.gamerpower.com/api/giveaway?id=${id}`);
-        const data = await response.json();
-        setGame(data); // Set the game details
-        setLoading(false); // Set loading to false once data is fetched
+        const data = await fetchData(`giveaway?id=${id}`); // Fetch giveaway details via the proxy
+        if (data) {
+          setGame(data);
+        } else {
+          console.error('No data received for the game');
+        }
       } catch (error) {
         console.error('Error fetching game details:', error);
-        setLoading(false); // Stop loading even if there's an error
+      } finally {
+        setLoading(false); // Ensure loading is set to false after the fetch
       }
     };
 
@@ -47,6 +51,10 @@ function Game() {
         <div style={{ width: '50%', height: '20px', backgroundColor: '#ccc', marginBottom: '20px', borderRadius: '5px' }}></div>
       </div>
     );
+  }
+
+  if (!game) {
+    return <div>Error: Game details could not be loaded.</div>;
   }
 
   return (

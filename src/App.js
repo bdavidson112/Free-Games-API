@@ -9,16 +9,18 @@ import Nav from './components/Nav';
 import Footer from './components/Footer';
 import { BrowserRouter as Router, Routes, Route } from 'react-router'; // Updated import for v6
 
-
-
 const apiUrl = process.env.REACT_APP_API_URL;
 
-async function fetchData() {
-  const response = await fetch(`${apiUrl}/endpoint`);
-  const data = await response.json();
-  console.log(data);
+export async function fetchData(endpoint) {
+  try {
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/${endpoint}`);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return null; // Return null if there's an error
+  }
 }
-
 
 function App() {
   return (
