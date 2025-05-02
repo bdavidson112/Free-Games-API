@@ -1,24 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import { fetchData } from '../App'; // Import fetchData from App.js
-import { useNavigate } from 'react-router'; // Import useNavigate for navigation
+import { useNavigate, useLocation } from 'react-router'; // Import useNavigate and useLocation
 
 function Games() {
   const [movies, setMovies] = useState([]); // State to store movies
   const [searchQuery, setSearchQuery] = useState(''); // State for search input
   const [filteredMovies, setFilteredMovies] = useState([]); // State for filtered movies
   const navigate = useNavigate(); // Initialize useNavigate
+  const location = useLocation(); // Get the current location
 
   useEffect(() => {
+    // Extract the search query from the URL
+    const params = new URLSearchParams(location.search);
+    const query = params.get('search') || ''; // Default to an empty string if no search query
+    setSearchQuery(query);
+
     const fetchMovies = async () => {
-      const data = await fetchData('s=batman'); // Example query to search for "batman"
+      const searchParam = query || 'batman'; // Default to "batman" if no query is provided
+      const data = await fetchData(`s=${searchParam}`); // Use the search query to fetch movies
       if (data && data.Search) {
         setMovies(data.Search);
         setFilteredMovies(data.Search);
+      } else {
+        setMovies([]);
+        setFilteredMovies([]);
       }
     };
 
     fetchMovies();
-  }, []);
+  }, [location.search]); // Re-run when the search query in the URL changes
 
   const handleInputChange = (e) => {
     const query = e.target.value.toLowerCase();
@@ -26,11 +36,8 @@ function Games() {
   };
 
   const handleButtonClick = () => {
-    // Filter movies based on the search query
-    const filtered = movies.filter((movie) =>
-      movie.Title.toLowerCase().includes(searchQuery)
-    );
-    setFilteredMovies(filtered);
+    // Update the URL with the new search query
+    navigate(`/games?search=${encodeURIComponent(searchQuery)}`);
   };
 
   const handleCardClick = (id) => {
